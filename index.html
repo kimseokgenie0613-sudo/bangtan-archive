@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="The Bangtan Archive — a fan-made chronological archive of BTS music.">
+  <title>The Bangtan Archive</title>
+  <style>
+    :root {
+      --lavender: #d8c5ff;
+      --lavender-light: #eee6ff;
+      --purple: #a77be8;
+      --deep-purple: #68409e;
+      --ink: #17111f;
+      --night: #08070b;
+      --soft-white: #f7f3ff;
+      --muted: #d2c9df;
+      --panel: rgba(238, 230, 255, 0.96);
+      --panel-line: rgba(255,255,255,.55);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--soft-white);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.65;
+      background:
+        radial-gradient(ellipse at 12% 0%, rgba(235,220,255,.95) 0%, rgba(190,151,245,.75) 16%, rgba(119,72,170,.48) 35%, transparent 62%),
+        linear-gradient(180deg, #c6a4f4 0%, #6b438d 23rem, #21152d 43rem, #08070b 68rem, #08070b 100%);
+      background-attachment: fixed;
+    }
+    a { color: inherit; }
+    button, input { font: inherit; }
+    .site-header {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      padding: 1.05rem clamp(1rem, 4vw, 2.5rem);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.25rem;
+      border-bottom: 1px solid rgba(24, 12, 37, .24);
+    }
+    .brand {
+      color: #17111f;
+      font-weight: 400;
+      font-size: clamp(1.1rem, 2.5vw, 1.55rem);
+      letter-spacing: .01em;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .main-nav { display: flex; gap: .45rem; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+    .nav-link {
+      display: inline-block;
+      border: 1px solid rgba(23,17,31,.35);
+      border-radius: 999px;
+      padding: .48rem .95rem;
+      text-decoration: none;
+      color: #17111f;
+      background: rgba(255,255,255,.24);
+      transition: background .15s ease, transform .15s ease;
+    }
+    .nav-link:hover, .nav-link:focus-visible { background: rgba(255,255,255,.65); transform: translateY(-1px); }
+    .nav-link[hidden] { display: none; }
+    main { width: min(1180px, 100%); margin: 0 auto; padding: clamp(1.25rem, 4vw, 2.5rem); min-height: 72vh; }
+    .page { display: none; animation: fadeIn .18s ease-out; }
+    .page.active { display: block; }
+    @keyframes fadeIn { from { opacity: .45; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    .home-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(280px, .95fr);
+      gap: clamp(1.25rem, 4vw, 2.5rem);
+      align-items: center;
+      margin-top: clamp(1rem, 4vw, 2.5rem);
+    }
+    .intro-card, .content-card {
+      color: var(--ink);
+      background: var(--panel);
+      border: 1px solid var(--panel-line);
+      border-radius: 18px;
+      padding: clamp(1.2rem, 3vw, 2rem);
+      box-shadow: 0 18px 60px rgba(0,0,0,.15);
+    }
+    h1, h2, h3 { line-height: 1.2; font-weight: 400; }
+    h1 { font-size: clamp(2rem, 5vw, 3.4rem); margin: 0 0 1rem; }
+    h2 { font-size: clamp(1.8rem, 4vw, 2.7rem); margin: 0 0 1rem; }
+    h3 { font-size: 1.2rem; margin: 1.2rem 0 .5rem; }
+    p { margin: 0 0 1rem; }
+    .intro-card p:last-child, .content-card p:last-child { margin-bottom: 0; }
+    .bts-photo { margin: 0; }
+    .bts-photo img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1.18 / 1;
+      object-fit: cover;
+      object-position: center;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.4);
+      box-shadow: 0 18px 55px rgba(0,0,0,.35);
+      background: #21152d;
+    }
+    .bts-photo figcaption { color: #e5d9f3; font-size: .78rem; margin-top: .55rem; }
+    .bts-photo figcaption a { color: #e5d9f3; }
+    .page-title { margin: .5rem 0 1.25rem; }
+    .page-subtitle { color: var(--muted); max-width: 780px; }
+    .contact-table-wrap { overflow-x: auto; }
+    .contact-table, .alias-table { border-collapse: collapse; width: 100%; }
+    .contact-table th, .contact-table td, .alias-table th, .alias-table td {
+      border-bottom: 1px solid rgba(35,20,52,.16);
+      padding: .8rem .85rem;
+      text-align: left;
+      vertical-align: top;
+    }
+    .contact-table th { width: 35%; font-weight: 600; }
+    .contact-table a { color: #3c1b65; overflow-wrap: anywhere; }
+    .contact-table a:hover { text-decoration-thickness: 2px; }
+    .alias-note { margin-bottom: 1.2rem; }
+    .alias-table th { background: rgba(160,117,215,.18); font-weight: 600; }
+    .alias-table td { background: rgba(255,255,255,.18); }
+    .years-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: .8rem; margin-top: 1.5rem; }
+    .year-link {
+      display: flex; min-height: 76px; align-items: center; justify-content: center;
+      padding: .9rem; border: 1px solid rgba(233,219,255,.42); border-radius: 13px;
+      color: var(--soft-white); text-decoration: none; font-size: 1.2rem;
+      background: rgba(23,13,32,.62); transition: transform .15s, background .15s, border-color .15s;
+    }
+    .year-link:hover, .year-link:focus-visible { transform: translateY(-2px); background: rgba(114,72,156,.7); border-color: var(--lavender); }
+    .year-note { margin-top: 1.5rem; color: var(--muted); }
+    .back-row { display: flex; gap: .7rem; flex-wrap: wrap; margin-top: 1.5rem; }
+    .action-link {
+      display: inline-block; color: var(--ink); background: var(--lavender-light); border: 1px solid #d8c5ff;
+      border-radius: 999px; padding: .6rem 1rem; text-decoration: none;
+    }
+    .action-link:hover { background: white; }
+    .year-empty { color: var(--ink); background: var(--panel); border-radius: 16px; padding: 1.2rem; margin-top: 1.3rem; }
+    footer { border-top: 1px solid rgba(255,255,255,.16); color: #cfc4db; text-align: center; padding: 1.3rem 1rem 2rem; font-size: .85rem; }
+    .small-note { font-size: .87rem; color: #4c4058; }
+    @media (max-width: 720px) {
+      .site-header { align-items: flex-start; flex-direction: column; }
+      .main-nav { justify-content: flex-start; }
+      .home-layout { grid-template-columns: 1fr; }
+      .bts-photo { order: -1; }
+      .bts-photo img { aspect-ratio: 1.35 / 1; }
+      .contact-table th, .contact-table td, .alias-table th, .alias-table td { padding: .65rem .55rem; }
+    }
+  </style>
+<script src="https://scripts.api.disqometer.com/desktop_inpage_script.js?nc=NjY4NDEzMjIwODU3MzIwODYyMzM1MTk="></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#home" data-route="home">The Bangtan Archive</a>
+    <nav class="main-nav" aria-label="Main menu">
+      <a class="nav-link" href="#home" data-route="home" id="homeNav" hidden>Home</a>
+      <a class="nav-link" href="#years" data-route="years">Years</a>
+      <a class="nav-link" href="#contact" data-route="contact">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page active" id="homePage" data-page="home">
+      <div class="home-layout">
+        <div class="intro-card">
+          <h1>The Bangtan Archive</h1>
+          <p>This is an organized list of all of BTS’s songs. I will be putting BTS songs, their solo content, unreleased songs, and such. This will be placed in chronological order. I will try my best to update the songs when I can. If there is missing information, wrong information, or you found something that I can add onto here, please don’t hesitate to contact me.</p>
+        </div>
+        <figure class="bts-photo">
+          <img
+            src="https://commons.wikimedia.org/wiki/Special:FilePath/BTS_at_the_White_House_on_May_31,_2022_07.jpg"
+            alt="A real group photograph of BTS at the White House in 2022"
+            loading="lazy">
+          <figcaption>
+            Real BTS group photograph, credited to The White House.
+            <a href="https://commons.wikimedia.org/wiki/File:BTS_at_the_White_House_on_May_31,_2022_07.jpg" target="_blank" rel="noopener noreferrer">Photo source and details</a>.
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="page" id="contactPage" data-page="contact">
+      <div class="content-card">
+        <h2>Contact Me</h2>
+        <p>If you spot missing information, a mistake, or something that should be added to the archive, please reach out.</p>
+        <div class="contact-table-wrap">
+          <table class="contact-table">
+            <tbody>
+              <tr><th scope="row">Instagram:</th><td><a href="https://www.instagram.com/jessi._._.pinkman/" target="_blank" rel="noopener noreferrer">@jessi._._.pinkman</a></td></tr>
+              <tr><th scope="row">Twitter / X:</th><td><a href="https://x.com/milkyyshookyy" target="_blank" rel="noopener noreferrer">@milkyyshookyy</a></td></tr>
+              <tr><th scope="row">Email:</th><td><a href="mailto:kimseokgenie0613@gmail.com">kimseokgenie0613@gmail.com</a></td></tr>
+              <tr><th scope="row">Discord:</th><td><a href="https://discord.com/app" target="_blank" rel="noopener noreferrer">jessi._._.pinkman</a> <span class="small-note">(open Discord to message or add me)</span></td></tr>
+              <tr><th scope="row">TikTok:</th><td><a href="https://www.tiktok.com/@kimseok_genie" target="_blank" rel="noopener noreferrer">@kimseok_genie</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="yearsPage" data-page="years">
+      <h2 class="page-title">Years</h2>
+      <div class="content-card alias-note">
+        <p><strong>Other alias’ include &gt;</strong></p>
+        <div class="contact-table-wrap">
+          <table class="alias-table">
+            <thead><tr><th>Namjoon</th><th>Yoongi</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td>RM</td><td>Suga</td><td></td></tr>
+              <tr><td>Rap Monster</td><td>Agust D</td><td></td></tr>
+              <tr><td>Runch Randa</td><td>Gloss</td><td></td></tr>
+              <tr><td>Randa</td><td>D-Town (Group)</td><td></td></tr>
+              <tr><td>Largo</td><td>m.y.k</td><td>(allegedly Yoongi)</td></tr>
+              <tr><td>Black Pirates (Group)</td><td></td><td></td></tr>
+              <tr><td>The Nexist</td><td></td><td></td></tr>
+              <tr><td>Daenamhyup (Group)</td><td></td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <p class="page-subtitle">Choose a year to browse the archive chronologically.</p>
+      <div class="years-grid" id="yearsGrid"></div>
+    </section>
+
+    <section class="page" id="yearPage" data-page="year">
+      <h2 class="page-title" id="yearHeading">Year</h2>
+      <div class="year-empty">
+        <p><strong>Song entries for this year will go here.</strong></p>
+        <p>This page is ready for the archive entries to be added. We'll fill it in carefully with release dates, categories, versions, notes, and source links.</p>
+      </div>
+      <div class="back-row">
+        <a class="action-link" href="#years" data-route="years">← Back to Years</a>
+        <a class="action-link" href="#home" data-route="home">Home</a>
+        <a class="action-link" href="#" id="previousYear">← Previous year</a>
+        <a class="action-link" href="#" id="nextYear">Next year →</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    The Bangtan Archive is an independent fan-made project and is not affiliated with BTS, BIGHIT MUSIC, or HYBE.
+  </footer>
+
+  <script>
+    const allYears = Array.from({ length: 2026 - 2008 + 1 }, (_, index) => 2008 + index);
+    let currentYear = 2008;
+
+    const pages = document.querySelectorAll("[data-page]");
+    const homeNav = document.getElementById("homeNav");
+
+    function showPage(pageName) {
+      pages.forEach(page => page.classList.toggle("active", page.dataset.page === pageName));
+      homeNav.hidden = pageName === "home";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function openYear(year) {
+      currentYear = Number(year);
+      document.getElementById("yearHeading").textContent = currentYear;
+      const previous = document.getElementById("previousYear");
+      const next = document.getElementById("nextYear");
+      previous.textContent = currentYear === allYears[0] ? "← Back to Years" : `← ${currentYear - 1}`;
+      next.textContent = currentYear === allYears[allYears.length - 1] ? "Last year in list" : `${currentYear + 1} →`;
+      previous.onclick = event => {
+        event.preventDefault();
+        if (currentYear === allYears[0]) {
+          showPage("years");
+          location.hash = "years";
+        } else {
+          openYear(currentYear - 1);
+          location.hash = `year-${currentYear}`;
+        }
+      };
+      next.onclick = event => {
+        event.preventDefault();
+        if (currentYear < allYears[allYears.length - 1]) {
+          openYear(currentYear + 1);
+          location.hash = `year-${currentYear}`;
+        }
+      };
+      showPage("year");
+    }
+
+    function buildYearLinks() {
+      const grid = document.getElementById("yearsGrid");
+      allYears.forEach(year => {
+        const link = document.createElement("a");
+        link.className = "year-link";
+        link.href = `#year-${year}`;
+        link.textContent = year;
+        link.addEventListener("click", event => {
+          event.preventDefault();
+          openYear(year);
+          location.hash = `year-${year}`;
+        });
+        grid.appendChild(link);
+      });
+    }
+
+    document.querySelectorAll("[data-route]").forEach(link => {
+      link.addEventListener("click", event => {
+        event.preventDefault();
+        const route = link.dataset.route;
+        showPage(route);
+        location.hash = route;
+      });
+    });
+
+    function loadFromHash() {
+      const hash = location.hash.replace("#", "");
+      if (hash === "contact") return showPage("contact");
+      if (hash === "years") return showPage("years");
+      if (hash.startsWith("year-")) {
+        const year = Number(hash.slice(5));
+        if (allYears.includes(year)) return openYear(year);
+      }
+      showPage("home");
+    }
+
+    buildYearLinks();
+    window.addEventListener("hashchange", loadFromHash);
+    loadFromHash();
+  </script>
+</body>
+</html>
